@@ -83,6 +83,8 @@ public class LoginPresenter {
                         String uid = userDetail.getUid();
                         //保存uid 全局变量
                         loginBean.DataBean.TtsTokenBean ttsToken = data.getTtsToken();
+                        String username = userDetail.getUsername();
+
                         String access_token = ttsToken.getAccess_token();
                         int expires_in = ttsToken.getExpires_in();
                         int openid = ttsToken.getOpenid();
@@ -95,6 +97,7 @@ public class LoginPresenter {
                         SharedUtils.putString("expires_in",expires_in+"");
                         SharedUtils.putString("uid",uid);
                         SharedUtils.getString("uid");
+                        SharedUtils.putString("username",username);
                         Log.d("TAG", "存uid"+SharedUtils.getString("uid"));
                         SharedUtils.getString("partid");
                         Log.d("TAG", "存partid"+ SharedUtils.getString("partid"));

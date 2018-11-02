@@ -127,7 +127,9 @@ initlize();
     String aesKeyStr;
     String lockKey;
     String adminPwd;
+    String keyStatus;
     TTlockListBean.KeyListBean.LockVersionBean lockVersion;
+    int keyRight;
 
     public void getUserLockList() {
 
@@ -239,7 +241,7 @@ initlize();
                     if (!StringUtils.isEmpty(lockList)){
 
 
-                        Log.d("TAG","锁列表"+lockList);
+                        Log.d("TAG","锁列表splash"+lockList);
                         Gson gson=new Gson();
                         TTlockListBean m = gson.fromJson(lockList, new TypeToken<TTlockListBean>() {}.getType());
                         List<TTlockListBean.KeyListBean> keyList = m.getKeyList();
@@ -272,6 +274,12 @@ initlize();
                                 lockVersion = userLockBean.getLockVersion();
                                 lockKey = userLockBean.getLockKey();
                                 adminPwd = userLockBean.getAdminPwd();
+                            keyStatus = userLockBean.getKeyStatus();
+                                keyRight = userLockBean.getKeyRight();
+                                String  startDate = userLockBean.getStartDate()+"";
+                                String endDate = userLockBean.getEndDate()+"";
+                                MainApplication.getInstence().setEndTime(endDate);
+                                MainApplication.getInstence().setStartTime(startDate);
 
                             }
                             Intent intent =new Intent(SplashActivity.this,MainActviity.class);
@@ -289,6 +297,8 @@ initlize();
                             intent.putExtra("lockKey", lockKey);
                             intent.putExtra("many", "1");  // 1 表示1条数据
                             intent.putExtra("adminPwd", adminPwd );
+                            intent.putExtra("keyStatus",keyStatus);
+                            intent.putExtra("keyRight",keyRight+"");
                             startActivity(intent);
 
                         }

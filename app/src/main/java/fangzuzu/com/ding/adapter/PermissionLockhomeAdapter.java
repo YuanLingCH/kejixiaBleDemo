@@ -22,10 +22,12 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
     Context mcontent;
     LayoutInflater inflater;
     String type;
-    public PermissionLockhomeAdapter(List data, Context mcontent,String type) {
+    String keyStatus;
+    public PermissionLockhomeAdapter(List data, Context mcontent,String type,String keyStatus) {
         this.data = data;
         this.mcontent=mcontent;
         this.type=type;
+        this.keyStatus=keyStatus;
         inflater=LayoutInflater.from(mcontent);
     }
 
@@ -61,7 +63,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
          //   holder.tvpermison.setText(description);
             holder.tvpermison.setText("钥匙授权");
            // Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
             // top = MainApplication.getInstence().getResources().getDrawable(R.mipmap.yaosi);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.yaosi);
             }else {
@@ -76,7 +78,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
         }else if (description.equals("发送密码")){
             holder.tvpermison.setText(description);
          //   Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
               //  top = MainApplication.getInstence().getResources().getDrawable(R.mipmap.fasongmima);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.fasongmima);
             }else {
@@ -91,7 +93,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
         }else if (description.equals("钥匙管理")){
             holder.tvpermison.setText(description);
           //  Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
               //  top =  MainApplication.getInstence().getResources().getDrawable(R.mipmap.yaosiguanli);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.yaosiguanli);
             }else {
@@ -108,7 +110,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
             holder.tvpermison.setText(description);
             holder.tvpermison.setPadding(0,10,0,0);
            // Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
              //   top =  MainApplication.getInstence().getResources().getDrawable(R.mipmap.mima);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.mima);
             }else {
@@ -124,7 +126,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
         }else if (description.equals("IC卡")){
             holder.tvpermison.setText("卡片管理");
           //  Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
               //  top = MainApplication.getInstence().getResources().getDrawable(R.mipmap.ic);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.ic);
 
@@ -143,7 +145,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
             holder.tvpermison.setText(description);
          //   holder.tvpermison.setPadding(50,0,0,0);
            // Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
               //  top =  MainApplication.getInstence().getResources().getDrawable(R.mipmap.ziwen);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.ziwen);
             }else {
@@ -160,7 +162,7 @@ public class PermissionLockhomeAdapter extends RecyclerView.Adapter<PermissionLo
             holder.tvpermison.setText(description);
 
           //  Drawable top = null;
-            if (type.equals("0")){
+            if (type.equals("0")&&keyStatus.equals("110401")){
               //  top =  MainApplication.getInstence().getResources().getDrawable(R.mipmap.jilu);// 获取res下的图片drawable
                 holder.iv_auth.setBackgroundResource(R.mipmap.jilu);
             }else {

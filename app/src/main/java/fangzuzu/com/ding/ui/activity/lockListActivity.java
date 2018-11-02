@@ -569,17 +569,56 @@ public String topic="fzzchat/PTP";
         switch(item.getItemId()){
 
             case R.id.seting_change_numbler:
-                UserBean user = SharedUtils.getUser();
-                Intent intent=new Intent(lockListActivity.this,LoginActivity.class);
-                if (user!=null) {
-                    String name = user.name;
-                    name = "";
-                    SharedPreferences shared = MainApplication.getInstence().getSharedPreferences("shared", Context.MODE_PRIVATE);
-                    shared.edit().clear().commit();
-                    MainApplication.getInstence().removeALLActivity_();  //清掉全部Activity
-                    startActivity(intent);
-                    finish();
-                }
+                View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
+                final TextView tv = (TextView) view.findViewById(R.id.tv);
+                TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
+                tv.setText("确定切换账号");
+                tv.setTextSize(18);
+                tv.setGravity(Gravity.CENTER);
+                TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
+                final AlertDialog dialog = new AlertDialog.Builder(lockListActivity.this)
+                        .setView(view)
+                        .create();
+                Window window=dialog.getWindow();
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+                WindowManager manager=getWindowManager();
+                Display defaultDisplay = manager.getDefaultDisplay();
+                android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+                p.width= (int) (defaultDisplay.getWidth()*0.85);
+                dialog.getWindow().setAttributes(p);     //设置生效
+
+                tv_cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                    }
+                });
+                tv_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        exitAPP();
+                        UserBean user = SharedUtils.getUser();
+                        if (user != null) {
+                            String name = user.name;
+                            name = "";
+                            SharedPreferences shared = MainApplication.getInstence().getSharedPreferences("shared", Context.MODE_PRIVATE);
+                            shared.edit().clear().commit();
+                            MainApplication.getInstence().removeALLActivity_();  //清掉全部Activity
+                            Intent intent = new Intent(MainApplication.getInstence(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+
+
+
+
                 break;
             case R.id.seting_add_admini:
                 Intent intent1=new Intent(lockListActivity.this,addSmartServiceActivityOne.class);
@@ -590,7 +629,27 @@ public String topic="fzzchat/PTP";
         //  return super.onOptionsItemSelected(item);
     }
 
+    public void exitAPP(){
+        Retrofit retrofit=new Retrofit.Builder()
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(MainApplication.getInstence().getClient())
+                .baseUrl(apiManager.baseUrl)
+                .build();
+        apiManager manager = retrofit.create(apiManager.class);
+        Call<String> call = manager.ExitAPP();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String body = response.body();
+                Log.d("TAG","退出APP"+body);
+            }
 
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
     @Override
     public void mqttSuccess() {
 
@@ -612,6 +671,8 @@ public String topic="fzzchat/PTP";
     String aesKeyStr;
     String lockKey;
     String adminPwd;
+    int keyRight;
+    String keyStatus;
     TTlockListBean.KeyListBean.LockVersionBean lockVersion;
     public void getLockListDataFromeService() {
         new Thread(){
@@ -659,6 +720,8 @@ public String topic="fzzchat/PTP";
                         lockVersion = userLockBean.getLockVersion();
                         lockKey = userLockBean.getLockKey();
                      adminPwd = userLockBean.getAdminPwd();
+                       keyRight = userLockBean.getKeyRight();
+                         keyStatus = userLockBean.getKeyStatus();
 
                     }
                     Intent intent =new Intent(lockListActivity.this,MainActviity.class);
@@ -676,6 +739,8 @@ public String topic="fzzchat/PTP";
                     intent.putExtra("lockKey", lockKey);
                     intent.putExtra("many", "1");  // 1 表示1条数据
                     intent.putExtra("adminPwd", adminPwd );
+                    intent.putExtra("keyRight",keyRight+"");
+                    intent.putExtra("keyStatus", keyStatus );
                    startActivity(intent);
 
                 } else {

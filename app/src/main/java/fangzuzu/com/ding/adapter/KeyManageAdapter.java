@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +60,7 @@ public class KeyManageAdapter extends RecyclerView.Adapter<KeyManageAdapter.keyV
         keyManagerBean.ListBean dataBean = mDatas.get(position);
 
 
+
         String username = dataBean.getUsername();
         final int keyId = dataBean.getKeyId();
         final String[] strArray = username.split("_");
@@ -69,8 +69,20 @@ public class KeyManageAdapter extends RecyclerView.Adapter<KeyManageAdapter.keyV
         final String[] strArraysenderUsername = senderUsername.split("_");
         final String startTime = dataBean.getStartDate()+"";
         final String endTime = dataBean.getEndDate()+"";
-      //  final String keyName = dataBean.getKeyName();
+        final int lockId = dataBean.getLockId();
+        final int keyRight = dataBean.getKeyRight();
 
+        final String keyStatus = dataBean.getKeyStatus();
+        //  final String keyName = dataBean.getKeyName();
+
+
+            if (keyRight==0){
+                holder.tv_auth.setText("未授权");
+                holder.tv_auth.setTextColor(Color.parseColor("#808080"));
+            }else if (keyRight==1){
+                holder.tv_auth.setText("已授权");
+                holder.tv_auth.setTextColor(Color.parseColor("#EC8325"));
+            }
        holder.name.setText(strArray[1].trim());
      //   holder.startTime.setText(substringstartTime+"至"+substringendTime);
         long timeStampSec = System.currentTimeMillis()/1000;
@@ -87,55 +99,83 @@ public class KeyManageAdapter extends RecyclerView.Adapter<KeyManageAdapter.keyV
 
 
             String substring = startTime.substring(0,startTime.length()-2);
-            Log.d("TAG","时间"+ substring);
+
             String startDate = dataBean.getStartDate()+"";
             String   startTime1 = startDate.substring(0, startDate.length() - 3);
             int start = Integer.parseInt(startTime1);
-            Log.d("TAG","时间"+ startTime);
+
             String substringstartTime = unixTime.stampToTime(start );
 
             String substringt = endTime.substring(0,endTime.length()-2);
-            Log.d("TAG","时间"+ substring);
+
             String endDate = dataBean.getEndDate()+"";
             String   endTime1 = endDate.substring(0, endDate.length() - 3);
             int end = Integer.parseInt(endTime1);
-            Log.d("TAG","结束时间撮"+ end);
+
             String substringendTime = unixTime.stampToTime(end );
 
             holder.startTime.setText(substringstartTime+"至"+substringendTime);
 
 
-            Log.d("TAG",""+timestamp);
+
             int current = Integer.parseInt(timestamp);
-            Log.d("TAG","当前时间错"+current);
+
             if (start-current>0){
-                holder.state.setText("未生效");
-                holder.state.setTextColor(Color.parseColor("#778899"));
+                if (keyStatus.equals("110405")){
+                    holder.state.setText("已冻结");
+                    holder.state.setTextColor(Color.RED);
+                }else {
+                    holder.state.setText("未生效");
+                    holder.state.setTextColor(Color.parseColor("#778899"));
+                }
+
+
                 ;
             }else if (start-current<0&&end-current>0){
-                holder.state.setText("已生效");
-                holder.state.setTextColor(Color.parseColor("#2E8B57"));
+                if (keyStatus.equals("110405")){
+                    holder.state.setText("已冻结");
+                    holder.state.setTextColor(Color.RED);
+                }else {
+                    holder.state.setText("已生效");
+                    holder.state.setTextColor(Color.parseColor("#2E8B57"));
+                }
+
+
 
 
 
             }else if (end-current<0&&!startTime.equals(endTime)){
+                if (keyStatus.equals("110405")){
+                    holder.state.setText("已冻结");
+                    holder.state.setTextColor(Color.RED);
+                }else {
+                    holder.state.setText("已过期");
+                    holder.state.setTextColor(Color.parseColor("#FF0000"));
+                }
 
-                holder.state.setText("已过期");
-                holder.state.setTextColor(Color.parseColor("#FF0000"));
+
                 holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
                 holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.icon_key_manage_unable));
             }
 
             }else {
 
-                holder.state.setText("已生效");
-                holder.state.setTextColor(Color.parseColor("#2E8B57"));
+                String keyStatus1= dataBean.getKeyStatus();
+                if (keyStatus1.equals("110405")){
+                    holder.state.setText("已冻结");
+                    holder.state.setTextColor(Color.RED);
+                }else {
+                    holder.state.setText("已生效");
+                    holder.state.setTextColor(Color.parseColor("#2E8B57"));
+                }
+
+
                 holder.startTime.setText("永久");
             }
         }
 
 
-        Log.d("TAG",""+timestamp);
+
 
         if(mOnItemLongClickListener != null){
            holder. itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -158,11 +198,15 @@ public class KeyManageAdapter extends RecyclerView.Adapter<KeyManageAdapter.keyV
                     intent.putExtra("startTime",startTime);
                     intent.putExtra("endTime",endTime);
                     intent.putExtra("TTsendTime",TTsendTime);
+                    intent.putExtra("lockId",lockId+"");
+                    intent.putExtra("keyStatus",keyStatus);
+                    intent.putExtra("keyRight",keyRight+"");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
-                    Log.d("TAG",""+"keyId..."+keyId);
+
                 }
             });
+
     }
 
     @Override
@@ -170,7 +214,7 @@ public class KeyManageAdapter extends RecyclerView.Adapter<KeyManageAdapter.keyV
         return mDatas.size();
     }
     class keyViewHolder extends RecyclerView.ViewHolder{
-        TextView name,startTime,state;
+        TextView name,startTime,state,tv_auth;
         LinearLayout re_adapter;
         ImageView iv;
         public keyViewHolder(View itemView) {
@@ -180,6 +224,7 @@ public class KeyManageAdapter extends RecyclerView.Adapter<KeyManageAdapter.keyV
             re_adapter= (LinearLayout) itemView.findViewById(R.id.re_adapter);
             iv= (ImageView) itemView.findViewById(R.id.iv);
             state= (TextView) itemView.findViewById(R.id.state);
+            tv_auth=(TextView) itemView.findViewById(R.id.tv_auth);
         }
     }
 

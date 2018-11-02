@@ -196,6 +196,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
         };
     };
     private String noKeyPwd;
+    private View tv_key_dongjie;
 
 
     @Override
@@ -249,14 +250,15 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
 
 
 
-
     /**
      * 拿到权限列表
      */
     private void initgetAuthor() {
         //拿到权限   	钥匙用户类型：110301-管理员钥匙，110302-普通用户钥匙。
         authData=new ArrayList();
-        if (TTuserType.equals("110301")){
+
+        Log.d("TAG","keyRight"+keyRight);
+        if (TTuserType.equals("110301")||keyRight.equals("1")){  //   	钥匙是否被授权：0-否，1-是
             authData.add("发送钥匙");
             authData.add("发送密码");
             authData.add("钥匙管理");
@@ -265,7 +267,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
             authData.add("指纹");
             authData.add("操作记录");
             authData.add("设置");
-        }else if (TTuserType.equals("110302")){
+        }else if (TTuserType.equals("110302")&&keyRight.equals("0")){
             authData.add("操作记录");
             authData.add("设置");
         }
@@ -274,7 +276,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainApplication.getInstence(), 4);
         gridLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         re_auth_list.setLayoutManager(gridLayoutManager);
-        adapter=new PermissionLockhomeAdapter( authData,MainApplication.getInstence(),type);
+        adapter=new PermissionLockhomeAdapter( authData,MainApplication.getInstence(),type,keyStatus);
         re_auth_list.setAdapter(adapter);
         if (type.equals("0")){
             authClick();
@@ -292,6 +294,8 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
         adapter.setItemClickListener(new PermissionLockhomeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String id) {
+                    if (keyStatus.equals("110401")){
+
 
                 if (id.equals("发送钥匙")){
                     Intent intent =new Intent(MainApplication.getInstence(), sendKeyActivity.class);
@@ -305,6 +309,8 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
                 }else if (id.equals("钥匙管理")){
                     Intent intent=new Intent(MainApplication.getInstence(), ElectKeyManagerActivity.class);
                     intent.putExtra("id",Lockid);
+                    intent.putExtra("TTuserType",TTuserType);
+
                     startActivity(intent);
                 }else if (id.equals("密码管理")){
                     Intent intent=new Intent(MainApplication.getInstence(), PasswordManagementActivity.class);
@@ -327,7 +333,10 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
                     intent.putExtra("Lockid",TTlockId);
                     intent.putExtra("TTlockMac",TTlockMac);
                     startActivity(intent);
-                }else if (id.equals("设置")){
+
+                }
+                    }
+                    if (id.equals("设置")){
                     Intent intent=new Intent(MainApplication.getInstence(),  keySetActivity.class);
                     intent.putExtra("id",TTlockId);  //TTlockAlias  TTuserType
                     intent.putExtra("TTlockAlias",TTlockAlias);
@@ -374,8 +383,8 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
             ((AppCompatActivity) getActivity()). getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
             ((AppCompatActivity) getActivity()). getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-
+        keyStatus = getActivity().getIntent().getStringExtra("keyStatus");
+        keyRight = getActivity().getIntent().getStringExtra("keyRight");
         re_auth_list= (RecyclerView) root.findViewById(R.id.re_auth_list);
         re_auth_list.setNestedScrollingEnabled(false);
         initgetAuthor();
@@ -385,7 +394,16 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
         elect= (TextView) root.findViewById(R.id.elect);
         elect.setText(TTelectricQuantity+"%");
         tv_ding= (Button) root.findViewById(R.id.tv_ding);
+        tv_key_dongjie = root.findViewById(R.id.tv_key_dongjie);
 
+        if (keyStatus.equals("110405")){  //冻结了
+            tv_key_dongjie.setVisibility(View.VISIBLE);
+            tv_ding.setBackgroundResource(R.mipmap.ding_unable);
+            tv_ding.setEnabled(false);
+
+        }else {
+
+        }
         setStatusBar();
 
 
@@ -669,6 +687,8 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
     String lockKey;
     String adminPwd;
     private String many;  // 1 一条数据  0  多条
+    String keyStatus;// 钥匙的状态值
+    String keyRight;  // 	钥匙是否被授权：0-否，1-是
     public void getIntetntData() {
        TTlockMac = getActivity().getIntent().getStringExtra("lockMac");
         TTlockAlias = getActivity().getIntent().getStringExtra("lockAlias");
@@ -687,6 +707,9 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
       adminPwd = getActivity().getIntent().getStringExtra("adminPwd");
         Log.d("TAG","lockFlagPos"+lockFlagPos);
         many = getActivity().getIntent().getStringExtra("many");
+        MainApplication.getInstence().setUserType(TTuserType);
+
+
     }
 
     /**

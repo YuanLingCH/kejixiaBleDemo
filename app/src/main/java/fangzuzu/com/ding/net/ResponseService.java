@@ -415,4 +415,78 @@ public class ResponseService {
         params.put("date", String.valueOf(System.currentTimeMillis()));
         return OkHttpRequest.sendPost(url, params);
     }
+    /**
+     * 冻结钥匙 管理员冻结发给普通用户的钥匙。 https://api.sciener.cn/v3/key/freeze
+     */
+
+    public static String freezeKey (int keyId) {
+        String url ="https://api.sciener.cn/v3/key/freeze";
+        HashMap params = new HashMap();
+        params.put("clientId", Config.CLIENT_ID);
+        params.put("accessToken", SharedUtils.getString("access_token"));
+        params.put("keyId", String.valueOf(keyId));
+        params.put("date", String.valueOf(System.currentTimeMillis()));
+        return OkHttpRequest.sendPost(url, params);
+    }
+
+    /**
+     * 解冻钥匙    管理员解除发给普通用户的钥匙的冻结
+     * @param keyId
+     * @return
+     */
+    public static String  keyRelieveFreeze (int keyId) {
+        String url ="https://api.sciener.cn/v3/key/unfreeze";
+        HashMap params = new HashMap();
+        params.put("clientId", Config.CLIENT_ID);
+        params.put("accessToken", SharedUtils.getString("access_token"));
+        params.put("keyId", String.valueOf(keyId));
+        params.put("date", String.valueOf(System.currentTimeMillis()));
+        return OkHttpRequest.sendPost(url, params);
+    }
+
+    /**
+     * 授予普通钥匙用户管理锁的权限，如发送钥匙和获取密码等权限。
+     * @param keyId
+     * @return
+     */
+    public static String  authorize(int keyId,int lockId) {
+        String url ="https://api.sciener.cn/v3/key/authorize";
+        HashMap params = new HashMap();
+        params.put("clientId", Config.CLIENT_ID);
+        params.put("accessToken", SharedUtils.getString("access_token"));
+        params.put("keyId", String.valueOf(keyId));
+        params.put("lockId", String.valueOf(lockId));
+        params.put("date", String.valueOf(System.currentTimeMillis()));
+        return OkHttpRequest.sendPost(url, params);
+    }
+    /**
+     * 解除授予普通钥匙用户的管理锁的权限
+     * @param keyId
+     * @return
+     */
+    public static String  RelieveAuthorize(int keyId,int lockId) {
+        String url ="https://api.sciener.cn/v3/key/unauthorize";
+        HashMap params = new HashMap();
+        params.put("clientId", Config.CLIENT_ID);
+        params.put("accessToken", SharedUtils.getString("access_token"));
+        params.put("keyId", String.valueOf(keyId));
+        params.put("lockId", String.valueOf(lockId));
+        params.put("date", String.valueOf(System.currentTimeMillis()));
+        return OkHttpRequest.sendPost(url, params);
+    }
+
+    /**
+     * 解除授予普通钥匙用户的管理锁的权限
+     *
+     * @return
+     */
+    public static String  emptyKey(int lockId) {
+        String url ="https://api.sciener.cn/v3/lock/deleteAllKey";
+        HashMap params = new HashMap();
+        params.put("clientId", Config.CLIENT_ID);
+        params.put("accessToken", SharedUtils.getString("access_token"));
+        params.put("lockId", String.valueOf(lockId));
+        params.put("date", String.valueOf(System.currentTimeMillis()));
+        return OkHttpRequest.sendPost(url, params);
+    }
 }

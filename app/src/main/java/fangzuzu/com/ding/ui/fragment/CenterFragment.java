@@ -87,29 +87,14 @@ public class CenterFragment extends BaseFragment {
         exit_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   IOSDialog alertDialog = new IOSDialog(getActivity())
 
-           /*     IOSDialog alertDialog = new IOSDialog(getActivity())
-                        .builder()
-                        .setCancelable(true)
-                        .setTitle("确定退出登录")
-                        .setPosColor(R.color.weishengxiao_)
-                        .setPositiveButton("确定",new View.OnClickListener() {
-                            @Override public void onClick(View v) {
-                                Toast.makeText(MainApplication.getInstence(), "确定", Toast.LENGTH_SHORT).show();
-                            } })
-
-                        .setNegativeButton("取消", new View.OnClickListener() {
-                            @Override public void onClick(View v) { Toast.makeText(MainApplication.getInstence(), "取消", Toast.LENGTH_SHORT).show();
-                            } });
-                        alertDialog.show();*/
 
 
                 View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
                 final TextView tv = (TextView) view.findViewById(R.id.tv);
                 TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
                 tv.setText("确定退出登录");
-                tv.setTextSize(18);
+                tv.setTextSize(16);
                 tv.setGravity(Gravity.CENTER);
                 TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
                 final AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -163,10 +148,49 @@ public class CenterFragment extends BaseFragment {
         updataPasw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainApplication.getInstence().removeALLActivity_();  //清掉全部Activity
-                Intent intent = new Intent(MainApplication.getInstence(), ForgetPassWordActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+
+
+                View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
+                final TextView tv = (TextView) view.findViewById(R.id.tv);
+                TextView tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
+                tv.setText("确定修改密码");
+                tv.setTextSize(16);
+                tv.setGravity(Gravity.CENTER);
+                TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
+                final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                        .setView(view)
+                        .create();
+                Window window=dialog.getWindow();
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+                WindowManager manager=getActivity().getWindowManager();
+                Display defaultDisplay = manager.getDefaultDisplay();
+                android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+                p.width= (int) (defaultDisplay.getWidth()*0.85);
+                dialog.getWindow().setAttributes(p);     //设置生效
+
+                tv_cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                    }
+                });
+                tv_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        MainApplication.getInstence().removeALLActivity_();  //清掉全部Activity
+                        Intent intent = new Intent(MainApplication.getInstence(), ForgetPassWordActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+
+
+
+
             }
         });
 

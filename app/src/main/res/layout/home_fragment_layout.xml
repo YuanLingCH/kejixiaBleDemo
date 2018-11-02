@@ -94,6 +94,14 @@ android:gravity="center"
     android:layout_width="match_parent"
     android:layout_weight="3"
     android:layout_height="0dp">
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_key_dongjie"
+        android:textColor="#f00"
+        android:gravity="center"
+        android:text="你的钥匙已被管理员冻结"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 <Button
     android:layout_marginTop="10dp"
     android:id="@+id/tv_ding"

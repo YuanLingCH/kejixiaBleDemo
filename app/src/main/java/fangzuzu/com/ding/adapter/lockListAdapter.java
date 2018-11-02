@@ -71,7 +71,9 @@ public class lockListAdapter extends RecyclerView.Adapter<lockListAdapter.lockVi
                 TTlockListBean.KeyListBean.LockVersionBean lockVersion = userLockBean.getLockVersion();
                 String lockKey = userLockBean.getLockKey();
                 String adminPwd = userLockBean.getAdminPwd();
-
+                String keyStatus = userLockBean.getKeyStatus();
+                int keyRight = userLockBean.getKeyRight();
+                Log.d("TAG","keyRight:,,,"+keyRight);
                 Intent intent =new Intent(mContext,MainActviity.class);
                 intent.putExtra("lockMac",lockMac);
                 intent.putExtra("lockAlias",lockAlias);
@@ -87,7 +89,8 @@ public class lockListAdapter extends RecyclerView.Adapter<lockListAdapter.lockVi
                 intent.putExtra("lockKey", lockKey);
                 intent.putExtra("many", "0");  // 1 表示1条数据  0 多条
                 intent.putExtra("adminPwd", adminPwd );
-
+                intent.putExtra("keyStatus", keyStatus );
+                intent.putExtra("keyRight",keyRight+"");
 
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -109,8 +112,8 @@ public class lockListAdapter extends RecyclerView.Adapter<lockListAdapter.lockVi
         String userType = userLockBean.getUserType();   // 钥匙用户类型：110301-管理员钥匙，110302-普通用户钥匙。
 
         String lockName = userLockBean.getLockAlias();
-
-      //  SharedUtils.putString("keyId",keyId);
+//  110401  110405
+        String keyStatus = userLockBean.getKeyStatus();
         String Starttime1 =  userLockBean.getStartDate()+"";
         int startTime1=0;
         String Starttime=null;
@@ -128,11 +131,6 @@ public class lockListAdapter extends RecyclerView.Adapter<lockListAdapter.lockVi
         }
 
 
-  /*      if (uid.equals(adminUserId)){
-            holder.iv_admin.setVisibility(View.VISIBLE);
-            holder.tv_admin.setVisibility(View.VISIBLE);
-            holder.lock_state.setBackgroundResource(R.color.yishengxiao);
-        }*/
 
 
         Log.d("TAG","开始时间"+startTime1);
@@ -158,49 +156,83 @@ public class lockListAdapter extends RecyclerView.Adapter<lockListAdapter.lockVi
                 e.printStackTrace();
             }
 
-/*
-            long timeStampSec = System.currentTimeMillis()/1000;
-            String timestamp = String.format("%010d", timeStampSec);
-            Log.d("TAG",""+timestamp);
-            int current = Integer.parseInt(timestamp);*/
             Log.d("TAG",""+ current[0]);
             if (startTime1- current[0] >0){
-                holder.lock_state.setText("未生效");
-             //   holder.lock_state.setTextColor(Color.parseColor("#EE0000"));
-             //  holder.re_adapter.setEnabled(false);
+                if (keyStatus.equals("110405")){
+                    holder.lock_state.setText("已冻结");
+                }else {
+                    holder.lock_state.setText("未生效");
+                }
+
+
                 holder.lock_state.setBackgroundResource(R.color.weishengxiao);
              holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
                 holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
             }else if (startTime1- current[0] <0&&end- current[0] >0&&!Starttime.equals(endtime)){
-                holder.lock_state.setText("已生效");
-                holder.lock_state.setBackgroundResource(R.color.yishengxiao);
-              //  holder.lock_state.setBackgroundColor(Color.parseColor("#31A14B"));
-                   // holder.lock_state.setTextColor(Color.parseColor("#00ff00"));
-                holder.re_adapter.setEnabled(true);
+
+                if (keyStatus.equals("110405")){
+                    holder.lock_state.setText("已冻结");
+                    holder.lock_state.setBackgroundResource(R.color.weishengxiao);
+                    holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
+                    holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
+                }else {
+                    holder.lock_state.setText("已生效");
+                    holder.lock_state.setBackgroundResource(R.color.yishengxiao);
+
+                    holder.re_adapter.setEnabled(true);
+                }
+
 
             }else if (end- current[0] <0&&!Starttime.equals(endtime)){
                /// holder.iv.setImageResource(R.drawable.door_logo);
-                holder.lock_state.setText("已过期");
-                holder.lock_state.setBackgroundResource(R.color.yiguoqi);
-             //   holder.lock_state.setBackgroundColor(Color.RED);
-              //  holder.lock_state.setTextColor(Color.parseColor("#EE0000"));
-             //  holder.re_adapter.setEnabled(false);
-                holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
-                holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
+
+                if (keyStatus.equals("110405")){
+                    holder.lock_state.setText("已冻结");
+                    holder.lock_state.setBackgroundResource(R.color.weishengxiao);
+                    holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
+                    holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
+                }else {
+                    holder.lock_state.setText("已过期");
+                    holder.lock_state.setBackgroundResource(R.color.yiguoqi);
+                    //   holder.lock_state.setBackgroundColor(Color.RED);
+                    //  holder.lock_state.setTextColor(Color.parseColor("#EE0000"));
+                    //  holder.re_adapter.setEnabled(false);
+                    holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
+                    holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
+                }
+
 
             }else if(Starttime.equals(endtime)){
                 holder.lock_state.setBackgroundResource(R.color.yishengxiao);
-                holder.lock_state.setText("已生效");
+
+                if (keyStatus.equals("110405")){
+                    holder.lock_state.setText("已冻结");
+                    holder.lock_state.setBackgroundResource(R.color.weishengxiao);
+                    holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
+                    holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
+                }else {
+                    holder.lock_state.setText("已生效");
+                    holder.re_adapter.setEnabled(true);
+                }
               //  holder.lock_state.setBackgroundColor(Color.parseColor("#31A14B"));
                // holder.lock_state.setTextColor(Color.parseColor("#00ff00"));
-                holder.re_adapter.setEnabled(true);
+
 
             }else if(StringUtils.isEmpty(Starttime)){
-                holder.lock_state.setText("已生效");
-                holder.lock_state.setBackgroundResource(R.color.yishengxiao);
-               // holder.lock_state.setBackgroundColor(Color.parseColor("#31A14B"));
-               // holder.lock_state.setTextColor(Color.parseColor("#00ff00"));
-                holder.re_adapter.setEnabled(true);
+
+                if (keyStatus.equals("110405")){
+                    holder.lock_state.setText("已冻结");
+                    holder.lock_state.setBackgroundResource(R.color.weishengxiao);
+                    holder.re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
+                    holder.iv.setBackground(ContextCompat.getDrawable(mContext,R.mipmap.lock_uneable));
+                }else {
+                    holder.lock_state.setText("已生效");
+                    holder.lock_state.setBackgroundResource(R.color.yishengxiao);
+                    // holder.lock_state.setBackgroundColor(Color.parseColor("#31A14B"));
+                    // holder.lock_state.setTextColor(Color.parseColor("#00ff00"));
+                    holder.re_adapter.setEnabled(true);
+
+                }
 
 
             }
@@ -249,7 +281,12 @@ public class lockListAdapter extends RecyclerView.Adapter<lockListAdapter.lockVi
         holder.lock_name.setText(lockName);
         if (endTime.equals("0")&&startTime.equals("0")){
             holder.lock_time.setText("永久");
-            holder.lock_state.setText("已生效");
+
+            if (keyStatus.equals("110405")){
+                holder.lock_state.setText("已冻结");
+            }else {
+                holder.lock_state.setText("已生效");
+            }
             holder.lock_state.setBackgroundResource(R.color.yishengxiao);
             // holder.lock_state.setBackgroundColor(Color.parseColor("#31A14B"));
             // holder.lock_state.setTextColor(Color.parseColor("#00ff00"));

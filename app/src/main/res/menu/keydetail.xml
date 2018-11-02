@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="授权"
+        android:id="@+id/key_authorization"
+        app:showAsAction="never"
+        />
+    <item android:title="冻结"
+        android:id="@+id/key_freeze"
+        app:showAsAction="never"
+        />
+    <item android:title="解除冻结"
+        android:id="@+id/key_relieve_freeze"
+        app:showAsAction="never"
+        />
+    <item android:title="取消授权"
+        android:id="@+id/key_relieve_authorization"
+        app:showAsAction="never"
+        />
+</menu>

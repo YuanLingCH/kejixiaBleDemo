@@ -147,7 +147,6 @@ public class passwordManagerListAdapter extends RecyclerView.Adapter{
                     //  end-current<0
                     lock_state.setText("已过期");
                    lock_state.setTextColor(Color.parseColor("#FF0000"));
-
                     iv.setImageResource(R.mipmap.icon_mima_unable);
                     re_adapter.setBackgroundColor(Color.parseColor("#E5E5E5"));
 
@@ -165,6 +164,7 @@ public class passwordManagerListAdapter extends RecyclerView.Adapter{
             String str=null;
          if(unlockType==2){
                 str="永久";
+             iv.setImageResource(R.mipmap.mima);
             }else if(unlockType==3){
                 str="限时";
             }else if(unlockType==4){
@@ -181,6 +181,7 @@ public class passwordManagerListAdapter extends RecyclerView.Adapter{
                 if (endTime.equals(startTime)){
                    // String substringStart = startTime.substring(0, startTime.length() - 5);
                   lock_time.setText(str);
+                    iv.setImageResource(R.mipmap.mima);
                 }else {
 
                     String substring1 = Starttime.substring(0, Starttime.length() - 3);
@@ -189,6 +190,7 @@ public class passwordManagerListAdapter extends RecyclerView.Adapter{
                     if (!endtime.equals("0")){
                         String substring = endTime.substring(0, endTime.length() - 3);
                         int jieshuTime = Integer.parseInt(substring);
+                        iv.setImageResource(R.mipmap.mima);
                         String substringendTime = unixTime.stampToTime(jieshuTime);
                         lock_time.setText(substringStart+"至"+substringendTime+str);
                     }else {

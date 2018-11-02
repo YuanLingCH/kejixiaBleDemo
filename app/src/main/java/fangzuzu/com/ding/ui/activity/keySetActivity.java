@@ -183,10 +183,15 @@ public class keySetActivity extends BaseActivity implements OnMqttListener,MainA
                 startActivity(intent);
             }
         });
+        if (TTuserType.equals("110301")){
+            ll_set_managerPasw.setVisibility(View.VISIBLE);
+            ll_set_managerPasw.setVisibility(View.VISIBLE);
+            ll_set_managerPasw.setVisibility(View.VISIBLE);
+        }
         ll_set_managerPasw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    if (uid.equals(adminUserId)){
+
                         View viewDialog = getLayoutInflater().inflate(R.layout.custom_diaglog_layut, null);
                         final TextView tv = (TextView) viewDialog.findViewById(R.id.dialog_editname);
                         TextView tv_cancle= (TextView) viewDialog.findViewById(R.id.add_cancle);
@@ -238,39 +243,7 @@ public class keySetActivity extends BaseActivity implements OnMqttListener,MainA
                         });
 
 
-                    }else {
 
-                        View viewDialog = getLayoutInflater().inflate(R.layout.custom_diaglog_layut, null);
-                        final TextView tv = (TextView) viewDialog.findViewById(R.id.dialog_editname);
-                        TextView tv_cancle= (TextView) viewDialog.findViewById(R.id.add_cancle);
-                        TextView tv1= (TextView) viewDialog.findViewById(R.id.tv);
-                        final EditText et= (EditText) viewDialog.findViewById(R.id.et_yanzhenpasw);
-                        tv1.setVisibility(View.INVISIBLE);
-                        tv.setText("你不是锁管理员，没有权限操作");
-                        et.setVisibility(View.INVISIBLE);
-                        tv.setTextColor(Color.RED);
-                        tv.setGravity(Gravity.CENTER);
-                        TextView tv_submit= (TextView)viewDialog.findViewById(R.id.add_submit);
-                        final AlertDialog dialog = new AlertDialog.Builder(keySetActivity.this)
-                                .setView(viewDialog)
-                                .create();
-                        dialog.show();
-                        tv_cancle.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
-
-                            }
-                        });
-                        tv_submit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
-
-
-                            }
-                        });
-                    }
 
             }
         });

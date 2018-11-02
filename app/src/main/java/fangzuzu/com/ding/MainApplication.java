@@ -61,6 +61,15 @@ public class MainApplication extends Application {
     String startTime;
     String endTime;
     String TTlockId;
+String userType;
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     public String getTTlockId() {
         return TTlockId;

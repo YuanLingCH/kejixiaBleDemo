@@ -1,6 +1,9 @@
 package fangzuzu.com.ding.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +16,8 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +29,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -144,7 +152,8 @@ public class ElectKeyManagerActivity extends BaseActivity implements OnMqttListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.keymanager,menu);
+        return true;
     }
 
     @Override
@@ -153,8 +162,95 @@ public class ElectKeyManagerActivity extends BaseActivity implements OnMqttListe
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.send_key_manager:
+                Intent intent=new Intent(ElectKeyManagerActivity.this,sendKeyActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.empty_key:  //清空钥匙
+                View view = getLayoutInflater().inflate(R.layout.custom_diaglog_layut_exit_app, null);
+                tv = (TextView) view.findViewById(R.id.tv);
+                tv_cancle= (TextView) view.findViewById(R.id.add_cancle);
+
+                tv.setTextSize(14);
+                tv.setGravity(Gravity.CENTER);
+                tv_submit= (TextView) view.findViewById(R.id.add_submit);
+                final AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setView(view)
+                        .create();
+                Window window=dialog.getWindow();
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+                WindowManager manager=getWindowManager();
+                Display defaultDisplay = manager.getDefaultDisplay();
+                android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+                p.width= (int) (defaultDisplay.getWidth()*0.85);
+                dialog.getWindow().setAttributes(p);     //设置生效
+
+                tv.setText("是否清空");
+                tv_cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        dialog.dismiss();
+
+                    }
+                });
+                tv_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        showProgressDialog("正在连接数据...");
+                        emptyKey();
+                    }
+                });
+                break;
         }
-        return super.onOptionsItemSelected(item);
+        return true;
+    }
+
+    /**
+     * 清空钥匙
+     */
+
+    TextView tv;
+    TextView tv_cancle;
+    TextView tv_submit;
+    private void emptyKey() {
+
+
+        new AsyncTask<Void, String, String>() {
+
+
+            @Override
+            protected String doInBackground(Void... params) {
+                String tTlockId = MainApplication.getInstence().getTTlockId();
+                String s = ResponseService.emptyKey(Integer.parseInt(tTlockId));
+                Log.d("TAG","清空钥匙"+s);
+                return s ;
+            }
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                cancelProgressDialog();
+                try {
+                    JSONObject object=new JSONObject(s);
+                    String errcode = object.getString("errcode");
+                    String description = object.getString("description");
+                    if (errcode.equals("0")){
+                        show_Toast("清空钥匙成功");
+                        getData();
+                    }else {
+                        show_Toast(description);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }.execute();
     }
 
     public void getData() {
@@ -275,13 +371,23 @@ public class ElectKeyManagerActivity extends BaseActivity implements OnMqttListe
                     //加载没有数据界面
                     mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
                 }else {
+
                     data3.clear();
                     Iterator<keyManagerBean.ListBean> iterator = list.iterator();
+                    String username1 = SharedUtils.getString("username");
                     while (iterator.hasNext()){
                         keyManagerBean.ListBean next = iterator.next();
-                        data3.add(next);
+                        String senderUsername = next.getSenderUsername();
+                        String[] strArraysenderUsername = senderUsername.split("_");
+                        if (username1.equals(strArraysenderUsername[1]+"")){ //蓝牙管理员
+                            data3.add(next);
+                        }
+
                     }
                     mHandler.sendEmptyMessage(MSG_PROGRESS_UI_DATA);
+                }
+                if (data3.size()==0){
+                    mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
                 }
                 String msg = "";
                 Log.d("TAG", json);
@@ -296,7 +402,11 @@ public class ElectKeyManagerActivity extends BaseActivity implements OnMqttListe
 
     }
 
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getData();
+    }
 
     @Override
     public void mqttSuccess() {
