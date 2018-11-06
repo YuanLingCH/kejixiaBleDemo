@@ -70,14 +70,13 @@ public class FingerPrintManageActivity extends BaseActivity implements SwipeRefr
                     break;
                 case MSG_PROGRESS_UI_DATA:
                     Log.d("TAG","刷新数据"+ fingerData.size());
-
                     Lv.setVisibility(View.VISIBLE);
                     ll_no_data.setVisibility(View.GONE);
-                   ;
-                    adapter=new fingerListAdapter(fingerData,FingerPrintManageActivity.this);
                     Lv.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
+
                     srf_layout.setRefreshing(false);
+                    Log.d("TAG","刷新数据结束");
                     break;
             }
         }
@@ -129,7 +128,7 @@ public class FingerPrintManageActivity extends BaseActivity implements SwipeRefr
         ll_no_data=(LinearLayout) findViewById(R.id.ll_nodata);
         iv_no_data=(ImageView) findViewById(R.id.iv_no_data);
         tv_no_data=(TextView) findViewById(R.id.tv_no_data);
-        Lv= (RecyclerView) findViewById(R.id.finger_lv);
+        Lv= (RecyclerView) findViewById(R.id.finger_rc);
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
@@ -196,6 +195,9 @@ public class FingerPrintManageActivity extends BaseActivity implements SwipeRefr
                            fingerBean.ListBean next = iterator.next();
                            fingerData.add(next);
                        }
+
+                       adapter=new fingerListAdapter(fingerData,FingerPrintManageActivity.this);
+
                        mHandler.sendEmptyMessage(MSG_PROGRESS_UI_DATA);
                    }
 

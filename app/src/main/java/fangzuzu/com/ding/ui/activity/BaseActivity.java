@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -65,6 +66,18 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
+    public final void toast(final String msg) {
+        if(Looper.getMainLooper() == Looper.myLooper())
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 
     /**
      * (permission request)

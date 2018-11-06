@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 
@@ -240,6 +241,20 @@ String userType;
         customerPaswListenner = maddIclistenner;
     }
 
+    /**
+     * 同步时间回调
+     */
+
+    private static BleOperSynchronizationkTimeListenner synchronizationkTimeListenner;
+
+    public interface  BleOperSynchronizationkTimeListenner{
+        void bleOperSynchronizationkTime();
+    }
+
+    public static void BleOperSynchronizationkTimeListenne(BleOperSynchronizationkTimeListenner  maddIclistenner) {
+        synchronizationkTimeListenner = maddIclistenner;
+    }
+    private Handler handler = new Handler();
     public static KeyDao keyDao;
     private Activity curActivity;
     /**
@@ -479,9 +494,11 @@ String userType;
 
     Key localKey;
     int uid;
+    boolean flag=false;
     private TTLockCallback mTTLockCallback=new TTLockCallback() {
         @Override
         public void onFoundDevice(final ExtendedBluetoothDevice extendedBluetoothDevice) {
+
            broadcastUpdate(BleConstant.ACTION_BLE_DEVICE, BleConstant.DEVICE, extendedBluetoothDevice);
             String address = extendedBluetoothDevice.getAddress();
             String lockmac = bleSession.getLockmac();
@@ -490,14 +507,11 @@ String userType;
             //此处是搜索到锁列表页面 选择要添加并且是进入可添加状态的锁进行连接
             if (extendedBluetoothDevice.getAddress().equals(TTLockmac)){
                 mTTLockAPI.stopBTDeviceScan();
-       Key   localKey = DbService.getKeyByLockmac(extendedBluetoothDevice.getAddress());
+             Key localKey = DbService.getKeyByLockmac(extendedBluetoothDevice.getAddress());
             if(localKey != null) {
 //                operateSuccess = false;
                 switch (bleSession.getOperation()) {
-//                    case UNLOCK:
-//                        if(extendedBluetoothDevice.isTouch())
-//                             mTTLockAPI.connect(extendedBluetoothDevice);
-//                        break;
+//
                     case SET_ADMIN_KEYBOARD_PASSWORD:
                     case SET_DELETE_PASSWORD:
                     case SET_LOCK_TIME:
@@ -526,23 +540,24 @@ String userType;
             }else {
 
 
-             if (!mTTLockAPI.isConnected(extendedBluetoothDevice)){
-
-
-                Timer timer=new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mTTLockAPI.stopBTDeviceScan();
-                        if (notAroundListenner!=null){
-                            notAroundListenner.bleOpernotAround();
+                if (!flag){
+                 handler.postDelayed(new Runnable() {
+                     @Override
+                     public void run() {
+                         //time后停止扫描
+                         mTTLockAPI.stopBTDeviceScan();
+                         if (notAroundListenner!=null){
+                             notAroundListenner.bleOpernotAround();
+                         }
+                         Log.d("TAG","锁不在身边");
                         }
-                        Log.d("TAG","锁不在身边");
-                    }
-                },10000);
+
+                 }, 10000);
 
                 }
-            //    Log.d("TAG","没有扫到设备");
+
+
+
             }
 
 
@@ -551,6 +566,7 @@ String userType;
         @Override
         public void onDeviceConnected(ExtendedBluetoothDevice extendedBluetoothDevice) {
             mTTLockAPI.stopBTDeviceScan();
+            flag=false;
             Log.d("TAG","连接设备");
          //   mTTLockAPI.lockInitialize(extendedBluetoothDevice);
             Log.d("TAG","localKey"+localKey);
@@ -585,7 +601,8 @@ String userType;
                     mTTLockAPI.setDeletePassword(extendedBluetoothDevice, uid, curKey.getLockVersion(), curKey.getAdminPwd(), curKey.getLockKey(), curKey.getLockFlagPos(), curKey.getAesKeyStr(), bleSession.getPassword());
                     break;
                 case SET_LOCK_TIME:
-                    mTTLockAPI.setLockTime(extendedBluetoothDevice, uid, localKey.getLockVersion(), localKey.getAdminPwd(), System.currentTimeMillis(), localKey.getLockFlagPos(), localKey.getAesKeyStr(), localKey.getTimezoneRawOffset());
+                    Log.d("TAG","同步时间走了"+System.currentTimeMillis());
+                    mTTLockAPI.setLockTime(extendedBluetoothDevice, uid, localKey.getLockVersion(), localKey.getLockKey(), System.currentTimeMillis(), localKey.getLockFlagPos(), localKey.getAesKeyStr(), localKey.getTimezoneRawOffset());
                     break;
                 case RESET_KEYBOARD_PASSWORD:
                     mTTLockAPI.resetKeyboardPassword(extendedBluetoothDevice, uid, curKey.getLockVersion(), curKey.getAdminPwd(), curKey.getLockKey(), curKey.getLockFlagPos(), curKey.getAesKeyStr());
@@ -652,6 +669,7 @@ String userType;
         @Override
         public void onDeviceDisconnected(ExtendedBluetoothDevice extendedBluetoothDevice) {
             Log.d("TAG","蓝牙断开连接");
+            ((BaseActivity)curActivity).cancelProgressDialog();
 
         }
 
@@ -749,7 +767,12 @@ String userType;
 
         @Override
         public void onSetLockTime(ExtendedBluetoothDevice extendedBluetoothDevice, Error error) {
-            Log.d("TAG","同步时间成功");
+            Log.d("TAG","同步时间回调"+error);
+        if (error==Error.SUCCESS){
+            if (synchronizationkTimeListenner!=null){
+                synchronizationkTimeListenner.bleOperSynchronizationkTime();
+            }
+        }
         }
 
         @Override

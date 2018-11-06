@@ -18,8 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,6 +52,7 @@ public class FoundDeviceActivity extends BaseActivity implements AdapterView.OnI
     private ListView listView;
     private FoundDeviceAdapter foundDeviceAdapter;
     String contentName;
+    ImageView icon_circle;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -82,6 +87,11 @@ public class FoundDeviceActivity extends BaseActivity implements AdapterView.OnI
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setStatusBar();
         init();
+        icon_circle=(ImageView) findViewById(R.id.icon_circle);
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.anim_circle_rotate);
+        LinearInterpolator interpolator = new LinearInterpolator();
+        rotateAnimation.setInterpolator(interpolator);
+        icon_circle.startAnimation(rotateAnimation);
 
       //  LogUtil.d("start bluetooth service", DBG);
 
@@ -167,6 +177,7 @@ public class FoundDeviceActivity extends BaseActivity implements AdapterView.OnI
                 if (StringUtils.isEmpty(contentName)){
                     Toast.makeText(FoundDeviceActivity.this, "请给设备命名", Toast.LENGTH_SHORT).show();
                 }else {
+                    dialog.dismiss();
                     mTTLockAPI.stopBTDeviceScan();
                     bleSession.setOperation(ADD_ADMIN);
                     mTTLockAPI.connect((ExtendedBluetoothDevice) foundDeviceAdapter.getItem(position));
@@ -189,7 +200,7 @@ public class FoundDeviceActivity extends BaseActivity implements AdapterView.OnI
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-
+        icon_circle.clearAnimation();
         cancelProgressDialog();
     }
 

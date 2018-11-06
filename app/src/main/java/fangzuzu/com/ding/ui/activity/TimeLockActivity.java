@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +31,7 @@ import static fangzuzu.com.ding.MainApplication.mTTLockAPI;
  * Created by lingyuan on 2018/6/22.
  */
 
-public class TimeLockActivity extends AppCompatActivity {
+public class TimeLockActivity extends BaseActivity implements MainApplication.BleOperSynchronizationkTimeListenner {
     Toolbar toolbar;
     TextView tv_time;
     ProgressDialog progressDialog;
@@ -60,7 +59,7 @@ public class TimeLockActivity extends AppCompatActivity {
         initlize();
        //初始化蓝牙
 
-
+MainApplication.BleOperSynchronizationkTimeListenne(this);
 
 
     }
@@ -111,6 +110,7 @@ public class TimeLockActivity extends AppCompatActivity {
     }
 //同步时间按钮
     public void butClick(View view) {
+        showProgressDialog("","连接蓝牙");
         String tTmac = getIntent().getStringExtra("TTmac");
         if (mTTLockAPI.isBLEEnabled(MainApplication.getInstence())){
             mTTLockAPI.connect(tTmac);
@@ -147,6 +147,14 @@ public class TimeLockActivity extends AppCompatActivity {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+    @Override
+    public void bleOperSynchronizationkTime() {
+        // 同步时间成功回调
+        hideProgressDialog();
+        show_Toast("同步时间成功");
+        finish();
     }
 }
 

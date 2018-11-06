@@ -18,6 +18,15 @@
             android:textSize="@dimen/title_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/icon_circle"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_gravity="right"
+            android:src="@mipmap/icon_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </android.support.v7.widget.Toolbar>
     <ListView
         android:layout_width="match_parent"

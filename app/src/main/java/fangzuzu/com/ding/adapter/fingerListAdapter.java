@@ -63,8 +63,8 @@ public class fingerListAdapter extends RecyclerView.Adapter<fingerListAdapter.Ic
 
         final String Starttime =  bean.getStartDate()+"";
         final String endtime = bean.getEndDate()+"";
-        Log.d("TAG","开始时间"+Starttime);
-        Log.d("TAG","结束时间"+endtime);
+        Log.d("TAG","添加指纹数据显示");
+
         if (!Starttime.equals("0")&&!endtime.equals("0")){
             String substring = Starttime.substring(0,Starttime.length()-3);
             Log.d("TAG","时间"+ substring);

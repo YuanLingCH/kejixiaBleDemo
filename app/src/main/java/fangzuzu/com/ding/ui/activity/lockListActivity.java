@@ -722,6 +722,10 @@ public String topic="fzzchat/PTP";
                      adminPwd = userLockBean.getAdminPwd();
                        keyRight = userLockBean.getKeyRight();
                          keyStatus = userLockBean.getKeyStatus();
+                        String startDate = userLockBean.getStartDate()+"";
+                        String endDate = userLockBean.getEndDate()+"";
+                        MainApplication.getInstence().setEndTime(endDate);
+                        MainApplication.getInstence().setStartTime(startDate);
 
                     }
                     Intent intent =new Intent(lockListActivity.this,MainActviity.class);
