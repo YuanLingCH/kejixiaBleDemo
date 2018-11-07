@@ -1,6 +1,7 @@
 package fangzuzu.com.ding.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +49,9 @@ public class icLockItemMessageActvity extends BaseActivity implements MainApplic
     TextView tv_toolbar;
     private String cardNumber;
     private String icCardId;
-    private String type;  // 1为指纹  0 ic卡
+
+    RelativeLayout time_indate;
+    TextView tv_ic_timeend;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,14 +96,19 @@ public class icLockItemMessageActvity extends BaseActivity implements MainApplic
     String id;
     String unlockFlag;  //  指纹 ic 身份证  id   16进制的字符串
     String addType;  //  2 指纹    3ic    4身份证
+    String tTendTime;
+    String ttStartTime;
+    private String type;  // 1为指纹  0 ic卡
     public void getData() {
+        tv_ic_timeend=(TextView) findViewById(R.id.tv_ic_timeend);
         tv_name= (TextView) findViewById(R.id.tv_ic_name);
         tv_addphone= (TextView) findViewById(R.id.tv_ic_phone);
         tv_time= (TextView) findViewById(R.id.tv_ic_time);
         but_delet= (Button) findViewById(R.id.but_ic_delect);
         tv_toolbar=(TextView) findViewById(R.id.tv_toolbar);
         tv_ic_add_time=(TextView) findViewById(R.id.tv_ic_add_time);
-        String unlockName = getIntent().getStringExtra("cardName");
+        time_indate=(RelativeLayout) findViewById(R.id.time_indate);
+        final String unlockName = getIntent().getStringExtra("cardName");
         String addPerson = getIntent().getStringExtra("userId");
         final String unlockType = getIntent().getStringExtra("addType");
         String tTcreateTime = getIntent().getStringExtra("TTcreateTime");
@@ -107,17 +116,38 @@ public class icLockItemMessageActvity extends BaseActivity implements MainApplic
         icCardId = getIntent().getStringExtra("icCardId");
         type = getIntent().getStringExtra("type");
         tv_ic_add_time.setText(tTcreateTime);
+       tTendTime = getIntent().getStringExtra("TTendTime");
+         ttStartTime = getIntent().getStringExtra("TTStartTime");
         Log.d("TAG","icCardId"+icCardId);
         tv_name.setText(unlockName);
         tv_addphone.setText(addPerson);
         if (unlockType.equals("0")){
-            tv_time.setText("限时");
+            tv_time.setText(ttStartTime);
+            tv_ic_timeend.setText(tTendTime);
         }else {
             tv_time.setText("永久");
+            tv_ic_timeend.setVisibility(View.GONE);
+        }
+        if (type.equals("0")){
+            tv_toolbar.setText("卡片详情");
+        }else {
+            tv_toolbar.setText("指纹详情");
         }
 
-            tv_toolbar.setText("卡片详情");
-
+        time_indate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mac = MainApplication.getInstence().getMac();
+                Intent intent=new Intent(icLockItemMessageActvity.this,modificationKeyLockMessageActivity.class);
+                intent.putExtra("TTmac",mac);
+                intent.putExtra("startTime",ttStartTime);
+                intent.putExtra("endTime",tTendTime);
+                intent.putExtra("cardNumber", cardNumber);
+                intent.putExtra("unlockName",unlockName);
+                intent.putExtra("type",type);
+                startActivity(intent);
+            }
+        });
 
         //删除
         but_delet.setOnClickListener(new View.OnClickListener() {

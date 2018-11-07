@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.Toolbar>
-    <LinearLayout
+    <RelativeLayout
         android:layout_margin="20dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -27,37 +27,75 @@
         <TextView
             android:textSize="@dimen/edit_text"
             android:text="名称"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/tv_ic_name"
             android:textSize="@dimen/edit_text"
             android:text="221"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_margin="20dp"
+    </RelativeLayout>
+
+    <View
+        android:layout_marginLeft="@dimen/space_20"
+        android:layout_marginRight="20dp"
+        android:background="@color/backgroundtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <RelativeLayout
+        android:id="@+id/time_indate"
+        android:layout_gravity="center"
+      android:layout_marginLeft="@dimen/space_20"
+        android:layout_marginRight="@dimen/space_20"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
-            android:textSize="@dimen/edit_text"
-            android:text="有效期"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_centerVertical="true"
+            android:text="有效时间"
+            android:textSize="@dimen/top"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:layout_alignParentRight="true"
             android:id="@+id/tv_ic_time"
-            android:textSize="@dimen/edit_text"
-            android:text="221"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:hint="请输入"
+            android:gravity="center_vertical|right"
+            android:textSize="@dimen/text_size_13"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
+        <TextView
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_below="@+id/tv_ic_time"
+            android:layout_alignParentRight="true"
+            android:id="@+id/tv_ic_timeend"
+            android:hint="请输入"
+            android:gravity="center_vertical|right"
+            android:textSize="@dimen/text_size_13"
+            android:drawablePadding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_marginLeft="3dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@mipmap/more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <View
+        android:layout_marginLeft="@dimen/space_20"
+        android:layout_marginRight="20dp"
+        android:background="@color/backgroundtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <RelativeLayout
         android:layout_margin="20dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -65,19 +103,24 @@
         <TextView
             android:textSize="@dimen/edit_text"
             android:text="添加人"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/tv_ic_phone"
             android:textSize="@dimen/edit_text"
             android:text="221"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+      android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
+    </RelativeLayout>
+    <View
+        android:layout_marginLeft="@dimen/space_20"
+        android:layout_marginRight="20dp"
+        android:background="@color/backgroundtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <RelativeLayout
         android:layout_margin="20dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -85,17 +128,17 @@
         <TextView
             android:textSize="@dimen/edit_text"
             android:text="添加时间"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/tv_ic_add_time"
             android:textSize="@dimen/edit_text"
             android:text="221"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </RelativeLayout>
     <Button
         android:id="@+id/but_ic_delect"
         android:layout_marginTop="40dp"

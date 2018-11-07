@@ -109,4 +109,8 @@ public enum Operation {
      * 删除指纹
      */
     DELETE_FINGER,
+    /**
+     * 修改指纹时间
+     */
+    MODIFY_FINGER_PRINT_PEROID,
 }

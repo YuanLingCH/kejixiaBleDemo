@@ -94,6 +94,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
     public static Key curKey;
     private BleSession bleSession;
     RoundProgressBarWidthNumber  mRoundProgressBar;
+    boolean flagOpenLock=true;
    // private HorizontalProgressBarWithNumber mProgressBar;
     private static final int MSG_PROGRESS_UPDATE = 0x110;
     private static final int MSG_PROGRESS_STOP = 0x111;
@@ -135,6 +136,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
                     tv_ding.setBackground(drawable);
                     break;
                 case MSG_PROGRESS_UNONCLICK:
+                    flagOpenLock=false;
                     Log.d("TAG","开锁回调HomeFragmentzoule");
                     Drawable drawable1 = getActivity().getDrawable(R.mipmap.ding_open);
                     tv_ding.setBackground(drawable1);
@@ -610,6 +612,14 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
 
 
              //   flag=true;
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (flagOpenLock){
+                            mHandler.sendEmptyMessage(MSG_PROGRESS_NOTAROUND);
+                        }
+                    }
+                },10000);
 
             }
         });

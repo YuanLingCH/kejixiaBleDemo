@@ -29,6 +29,15 @@ public class BleSession {
     private boolean flag;
     private long cardNo;
     private  String bleManager;
+    String icNumblder;
+
+    public String getIcNumblder() {
+        return icNumblder;
+    }
+
+    public void setIcNumblder(String icNumblder) {
+        this.icNumblder = icNumblder;
+    }
 
     public String getBleManager() {
         return bleManager;

@@ -64,6 +64,7 @@ public class MainApplication extends Application {
     String TTlockId;
 String userType;
 
+
     public String getUserType() {
         return userType;
     }
@@ -254,6 +255,20 @@ String userType;
     public static void BleOperSynchronizationkTimeListenne(BleOperSynchronizationkTimeListenner  maddIclistenner) {
         synchronizationkTimeListenner = maddIclistenner;
     }
+    /**
+     * 修改指纹时间
+     */
+
+    private static BleOpermodificationkFingerTimeListenner modificationkFingerTimeListenner;
+
+    public interface  BleOpermodificationkFingerTimeListenner{
+        void bleOpermodificationkFingerTTime();
+    }
+
+    public static void BleOpermodificationkFingerTimeListenne(BleOpermodificationkFingerTimeListenner  maddIclistenner) {
+        modificationkFingerTimeListenner = maddIclistenner;
+    }
+
     private Handler handler = new Handler();
     public static KeyDao keyDao;
     private Activity curActivity;
@@ -523,6 +538,8 @@ String userType;
                     case ADD_PASSCODE:
                     case CLICK_UNLOCK:
                     case ADD_ICCARD:
+                    case MODIFY_ICPEROID:
+                    case MODIFY_FINGER_PRINT_PEROID:
                         if(extendedBluetoothDevice.getAddress().equals(bleSession.getLockmac())){
                             Timer timer=new Timer();
                             timer.schedule(new TimerTask() {
@@ -648,7 +665,7 @@ String userType;
                     break;
                 case MODIFY_ICPEROID:  //修改IC 卡时间   3301608137
 
-                    mTTLockAPI.modifyICPeriod(extendedBluetoothDevice, uid, localKey.getLockVersion(), localKey.getAdminPwd(), localKey.getLockKey(), localKey.getLockFlagPos(),0,bleSession.getStartDate(), bleSession.getEndDate(),localKey.getAesKeyStr(),localKey.getTimezoneRawOffset());
+                    mTTLockAPI.modifyICPeriod(extendedBluetoothDevice, uid, localKey.getLockVersion(), localKey.getAdminPwd(), localKey.getLockKey(), localKey.getLockFlagPos(),MainApplication.bleSession.getCardNo(),bleSession.getStartDate(), bleSession.getEndDate(),localKey.getAesKeyStr(),localKey.getTimezoneRawOffset());
                     break;
                 case DELETE_ICCARD:  //修改IC 卡时间   3301608137
 
@@ -659,8 +676,10 @@ String userType;
                     mTTLockAPI.addFingerPrint(extendedBluetoothDevice,uid,localKey.getLockVersion(),localKey.getAdminPwd(),localKey.getLockKey(), localKey.getLockFlagPos(),localKey.getAesKeyStr());
                     break;
                 case DELETE_FINGER:  //添加指纹
-
                     mTTLockAPI.deleteFingerPrint(extendedBluetoothDevice,uid,localKey.getLockVersion(),localKey.getAdminPwd(),localKey.getLockKey(), localKey.getLockFlagPos(),bleSession.getCardNo(),localKey.getAesKeyStr());
+                    break;
+                case MODIFY_FINGER_PRINT_PEROID:
+                    mTTLockAPI.modifyFingerPrintPeriod(extendedBluetoothDevice, uid, localKey.getLockVersion(), localKey.getAdminPwd(), localKey.getLockKey(), localKey.getLockFlagPos(),bleSession.getCardNo(),bleSession.getStartDate(), bleSession.getEndDate(),localKey.getAesKeyStr(),localKey.getTimezoneRawOffset());
                     break;
 
             }
@@ -954,7 +973,10 @@ String userType;
 
         @Override
         public void onModifyFingerPrintPeriod(ExtendedBluetoothDevice extendedBluetoothDevice, int i, long l, long l1, long l2, Error error) {
-            Log.d("TAG","修改指纹时间回调"+error);
+            Log.d("TAG","修改指纹时间回调1111"+error);
+            if (error==Error.SUCCESS){
+                modificationkFingerTimeListenner.bleOpermodificationkFingerTTime();
+            }
         }
 
         @Override

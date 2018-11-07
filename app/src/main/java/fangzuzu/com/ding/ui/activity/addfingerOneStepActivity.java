@@ -154,6 +154,7 @@ public class addfingerOneStepActivity extends BaseActivity implements MainApplic
                         intent.putExtra("statTime","0");
                         intent.putExtra("endTime","0");
                         intent.putExtra("flag","0");  //0 永久
+                        intent.putExtra("fingerName",fingerName);
                         startActivity(intent);
 
                     }

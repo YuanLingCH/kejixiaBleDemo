@@ -12,7 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import fangzuzu.com.ding.R;
 import fangzuzu.com.ding.bean.fingerBean;
@@ -232,6 +235,33 @@ public class fingerListAdapter extends RecyclerView.Adapter<fingerListAdapter.Ic
                 Log.d("TAG","结束时间撮"+ start);
                 String TTcreateTime = unixTime.stampToTime(start );
                 String cardNumber = bean.getFingerprintNumber();
+                String endDate = bean.getEndDate()+"";
+                String TTendTime=null;
+                if (!endDate.equals("0")){
+                    String endDateone = endDate.substring(0, endDate.length() - 3);
+                    int startTwo = Integer.parseInt(endDateone);
+                   TTendTime = unixTime.stampToTime(startTwo);
+                }else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+                    String now = sdf.format(new Date());
+                    TTendTime=now;
+                }
+
+                String startDate = bean.getStartDate()+"";
+                String TTStartTime=null;
+            if (!startDate.equals("0")){
+                String startDateOne  = startDate .substring(0, startDate .length() - 3);
+                int startTimeTwo = Integer.parseInt(startDateOne);
+                TTStartTime = unixTime.stampToTime(startTimeTwo);
+            }else {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+                String now = sdf.format(new Date());
+                TTStartTime=now;
+            }
+
+
+
+
                 Intent  intent=new Intent(mContext, icLockItemMessageActvity.class);
                 intent.putExtra("cardName",cardName );
                 intent.putExtra("userId",split[1].trim() );
@@ -244,6 +274,8 @@ public class fingerListAdapter extends RecyclerView.Adapter<fingerListAdapter.Ic
                 intent.putExtra("TTcreateTime",TTcreateTime);
                 intent.putExtra("cardNumber",cardNumber);
                 intent.putExtra("type","1");  //  1为指纹  0 ic卡
+                intent.putExtra("TTendTime",TTendTime);
+                intent.putExtra("TTStartTime",TTStartTime);
                 mContext.startActivity(intent);
             }
         });
