@@ -45,9 +45,11 @@ public class dfuActivity extends BaseActivity {
     private String tTlockId;
         TextView tv_state,tv_version;
 
+
     ProgressDialog progressDialog;
 
     private DeviceFirmwareUpdateApi deviceFirmwareUpdateApi;
+
     private DeviceFirmwareUpdateCallback deviceFirmwareUpdateCallback = new DeviceFirmwareUpdateCallback() {
         @Override
         public void onGetLockFirmware(int specialValue, String module, String hardware, String firmware) {

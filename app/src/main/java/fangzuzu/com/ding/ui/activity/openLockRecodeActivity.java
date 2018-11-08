@@ -74,8 +74,11 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
     TextView tv_no_data;
     String uid;
     private String tTlockMac;
-
-
+    List dataAPP;
+    List datazhiwen;
+    List dataIc;
+    List dataMima;
+    List dataKey;
 
     private static final int MSG_PROGRESS_UI = 0x112;
     private static final int MSG_PROGRESS_UI_DATA = 0x113;
@@ -102,6 +105,56 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                     rc.setAdapter(adapter);
                     re_reach.setAdapter(adapter);
                    // srf.setRefreshing(false);
+                    break;
+                case 1:
+                    ll_nodata.setVisibility(View.GONE);
+                    ll_no_noe.setVisibility(View.VISIBLE);
+                    fr_no_two.setVisibility(View.VISIBLE);
+                    rc.setVisibility(View.VISIBLE);
+                    adapter = new openLockRecodeAdapter(dataAPP, openLockRecodeActivity.this);
+                    rc.setAdapter(adapter);
+                    re_reach.setAdapter(adapter);
+                    // srf.setRefreshing(false);
+                    break;
+                case 4:
+                    ll_nodata.setVisibility(View.GONE);
+                    ll_no_noe.setVisibility(View.VISIBLE);
+                    fr_no_two.setVisibility(View.VISIBLE);
+                    rc.setVisibility(View.VISIBLE);
+                    adapter = new openLockRecodeAdapter(dataMima, openLockRecodeActivity.this);
+                    rc.setAdapter(adapter);
+                    re_reach.setAdapter(adapter);
+                    // srf.setRefreshing(false);
+                    break;
+                case 8:
+                    ll_nodata.setVisibility(View.GONE);
+                    ll_no_noe.setVisibility(View.VISIBLE);
+                    fr_no_two.setVisibility(View.VISIBLE);
+                    rc.setVisibility(View.VISIBLE);
+                    adapter = new openLockRecodeAdapter(datazhiwen, openLockRecodeActivity.this);
+                    rc.setAdapter(adapter);
+                    re_reach.setAdapter(adapter);
+                    // srf.setRefreshing(false);
+                    break;
+                case 7:
+                    ll_nodata.setVisibility(View.GONE);
+                    ll_no_noe.setVisibility(View.VISIBLE);
+                    fr_no_two.setVisibility(View.VISIBLE);
+                    rc.setVisibility(View.VISIBLE);
+                    adapter = new openLockRecodeAdapter(dataIc, openLockRecodeActivity.this);
+                    rc.setAdapter(adapter);
+                    re_reach.setAdapter(adapter);
+                    // srf.setRefreshing(false);
+                    break;
+                case 10:
+                    ll_nodata.setVisibility(View.GONE);
+                    ll_no_noe.setVisibility(View.VISIBLE);
+                    fr_no_two.setVisibility(View.VISIBLE);
+                    rc.setVisibility(View.VISIBLE);
+                    adapter = new openLockRecodeAdapter(dataKey, openLockRecodeActivity.this);
+                    rc.setAdapter(adapter);
+                    re_reach.setAdapter(adapter);
+                    // srf.setRefreshing(false);
                     break;
             }
         }
@@ -199,6 +252,11 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
         LinearLayoutManager lin=new LinearLayoutManager(MainApplication.getInstence());
         lin.setOrientation(OrientationHelper.VERTICAL);
         rc.setLayoutManager(lin);
+        dataAPP=new ArrayList();
+        dataIc=new ArrayList();
+        dataKey=new ArrayList();
+        dataMima=new ArrayList();
+        datazhiwen=new ArrayList();
 
     }
 
@@ -234,12 +292,30 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                     openLockRecoderBean bean = gson.fromJson(json, new TypeToken<openLockRecoderBean>() {}.getType());
                     List<openLockRecoderBean.ListBean> list = bean.getList();
                     data3.clear();
+                    dataKey.clear();
+                    dataIc.clear();
+                    dataAPP.clear();
+                    dataMima.clear();
+                    datazhiwen.clear();
                     if (list.size()==0){
                         mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
                     }else {
                         Iterator<openLockRecoderBean.ListBean> iterator = list.iterator();
                         while (iterator.hasNext()){
                             openLockRecoderBean.ListBean next = iterator.next();
+                            int recordType = next.getRecordType();  // 1 APP开锁 4 密码开锁 8 指纹开锁 7 IC开锁  10钥匙开锁
+                            if (recordType==1){
+                                dataAPP.add(next);
+                            }else if (recordType==4){
+                                dataMima.add(next);
+                            }else if (recordType==8){
+                                datazhiwen.add(next);
+                            }else  if (recordType==7){
+                                dataIc.add(next);
+                            }else if (recordType==10){
+                                dataKey.add(next);
+                            }
+
                             data3.add(next);
 
                         }
@@ -291,10 +367,16 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                         // 0
                         open_molder_ll.setVisibility(View.GONE);
                         re_reach.setVisibility(View.VISIBLE);
-                        getOpenLockRecoder("0");
+
                         LinearLayoutManager lin=new LinearLayoutManager(MainApplication.getInstence());
                         lin.setOrientation(OrientationHelper.VERTICAL);
                         re_reach.setLayoutManager(lin);
+                        if (dataMima.size()==0){
+                            mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
+                        }else {
+                            mHandler.sendEmptyMessage(4);
+                        }
+
 
 
                     }
@@ -305,12 +387,16 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                     public void onClick(View v) {
                         //  1
                         open_molder_ll.setVisibility(View.GONE);
-                        getOpenLockRecoder("1");
+
                         re_reach.setVisibility(View.VISIBLE);
                         LinearLayoutManager lin=new LinearLayoutManager(MainApplication.getInstence());
                         lin.setOrientation(OrientationHelper.VERTICAL);
                         re_reach.setLayoutManager(lin);
-
+                        if (dataAPP.size()==0){
+                            mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
+                        }else {
+                            mHandler.sendEmptyMessage(1);
+                        }
 
                     }
                 });
@@ -321,10 +407,16 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                         // 2
                         re_reach.setVisibility(View.VISIBLE);
                         open_molder_ll.setVisibility(View.GONE);
-                        getOpenLockRecoder("2");
+
                         LinearLayoutManager lin=new LinearLayoutManager(MainApplication.getInstence());
                         lin.setOrientation(OrientationHelper.VERTICAL);
                         re_reach.setLayoutManager(lin);
+                        if (datazhiwen.size()==0){
+                            mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
+                        }else {
+                            mHandler.sendEmptyMessage(8);
+                        }
+
 
                     }
                 });
@@ -334,11 +426,17 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                     public void onClick(View v) {
                     // 3
                         open_molder_ll.setVisibility(View.GONE);
-                        getOpenLockRecoder("3");
+
                         re_reach.setVisibility(View.VISIBLE);
                         LinearLayoutManager lin=new LinearLayoutManager(MainApplication.getInstence());
                         lin.setOrientation(OrientationHelper.VERTICAL);
                         re_reach.setLayoutManager(lin);
+                        if (dataIc.size()==0){
+                            mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
+                        }else {
+                            mHandler.sendEmptyMessage(7);
+                        }
+
 
                     }
                 });
@@ -348,11 +446,16 @@ public class openLockRecodeActivity extends BaseActivity implements MainApplicat
                     public void onClick(View v) {
                     // 4
                         open_molder_ll.setVisibility(View.GONE);
-                        getOpenLockRecoder("4");
+
                         re_reach.setVisibility(View.VISIBLE);
                         LinearLayoutManager lin=new LinearLayoutManager(MainApplication.getInstence());
                         lin.setOrientation(OrientationHelper.VERTICAL);
                         re_reach.setLayoutManager(lin);
+                        if (dataKey.size()==0){
+                            mHandler.sendEmptyMessage(MSG_PROGRESS_UI);
+                        }else {
+                            mHandler.sendEmptyMessage(10);
+                        }
 
                     }
                 });

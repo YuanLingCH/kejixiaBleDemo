@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -248,7 +250,63 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
     }
 
 
+    /**
+     * 时间的判断
+     *
+     */
+    public  void initTimeJudge(){
 
+        long currentTimeMillis = System.currentTimeMillis();
+        String startTime = MainApplication.getInstence().getStartTime();
+        String endTime = MainApplication.getInstence().getEndTime();
+        if (!startTime.equals("0")&&!endTime.equals("0")){
+            long lstartTime = Long.parseLong(startTime);
+            long lendTime = Long.parseLong(endTime);
+            if (lstartTime>currentTimeMillis||lendTime<currentTimeMillis){
+                tv_ding.setEnabled(false);
+                tv_ding.setBackgroundResource(R.mipmap.ding_unable);
+                type="1";
+                View view = getLayoutInflater().inflate(R.layout.xuzhu_dialog, null);
+                final TextView tv = (TextView) view.findViewById(R.id.tv);
+                if (lstartTime>currentTimeMillis){
+                    tv.setText("锁未生效，暂时不能使用");
+                }else {
+                    tv.setText("锁已过期，暂时不能使用");
+                }
+
+                tv.setTextSize(16);
+                tv.setGravity(Gravity.CENTER);
+                TextView tv_submit= (TextView) view.findViewById(R.id.add_submit);
+                tv_submit.setText("我知道了");
+
+                final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                        .setView(view)
+                        .create();
+                dialog.setCanceledOnTouchOutside(false);
+                Window window=dialog.getWindow();
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+                WindowManager manager=getActivity().getWindowManager();
+                Display defaultDisplay = manager.getDefaultDisplay();
+                android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+                p.width= (int) (defaultDisplay.getWidth()*0.85);
+                dialog.getWindow().setAttributes(p);     //设置生效
+                tv_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        //   xuzhuGetdata();
+
+
+                    }
+                });
+
+            }
+        }
+        Log.d("TAG","北京时间撮"+currentTimeMillis);
+
+                }
 
 
 
@@ -389,7 +447,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
         keyRight = getActivity().getIntent().getStringExtra("keyRight");
         re_auth_list= (RecyclerView) root.findViewById(R.id.re_auth_list);
         re_auth_list.setNestedScrollingEnabled(false);
-        initgetAuthor();
+
 
         tv_lock_name= (TextView) root.findViewById(R.id.tv_lock_name);
         tv_lock_name.setText(TTlockAlias);
@@ -407,8 +465,8 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
 
         }
         setStatusBar();
-
-
+        initTimeJudge();
+        initgetAuthor();
     //  mProgressBar = (HorizontalProgressBarWithNumber)root. findViewById(R.id.id_progressbar01);
         mRoundProgressBar = (RoundProgressBarWidthNumber)root. findViewById(R.id.id_progress02);
 
@@ -509,7 +567,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
         MainApplication.getInstence().setElect(electricity);
         MainApplication.getInstence().setStartTime(StartTime);
         MainApplication.getInstence().setEndTime(endTime);
-        Log.d("TAG","adminPsw1"+adminPsw1);
+
 
 
 
@@ -560,6 +618,7 @@ public class HomeFragment extends BaseFragment implements MainApplication.BleOpe
     protected void initEvents() {
 
         tv_ding.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 

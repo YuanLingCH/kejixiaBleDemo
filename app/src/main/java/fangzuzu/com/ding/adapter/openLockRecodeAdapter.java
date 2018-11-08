@@ -61,15 +61,19 @@ public class openLockRecodeAdapter extends RecyclerView.Adapter<openLockRecodeAd
             holder.open_type.setText("APP开锁");
             holder.iv_open_lock.setImageResource(R.mipmap.portrait);
         }else if (unlockType==4){
+            holder.open_user.setText("密码");
             holder.open_type.setText("密码开锁");
             holder.iv_open_lock.setImageResource(R.mipmap.mima);
         }else if (unlockType==8){
+            holder.open_user.setText("指纹");
             holder.open_type.setText("指纹开锁");
             holder.iv_open_lock.setImageResource(R.mipmap.ziwen);
         }else if (unlockType==7){
+            holder.open_user.setText("IC卡");
             holder.open_type.setText("IC开锁");
             holder.iv_open_lock.setImageResource(R.mipmap.ic_enable);
         }else if (unlockType==10){
+            holder.open_user.setText("钥匙");
             holder.open_type.setText("钥匙开锁");
             holder.iv_open_lock.setImageResource(R.mipmap.shengfz_enable);
         }
